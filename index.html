@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Runner's Progress Tracker (Demo)</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🏃‍♂️ Runner's Progress Tracker</h1>
+      <p>Track your marathon progress and calculate required pace</p>
+      <p>The faster you run, the sooner you can stop running. Logic! 😎</p>
+      <p class="note">Read-only demo (no saving). Full PHP version available on GitHub.</p>
+    </div>
+
+    <div class="content">
+      <div class="form-section">
+        <h2>📊 Enter Race Details</h2>
+
+        <form id="raceForm">
+          <div class="form-group">
+            <label for="total_distance">Total Marathon Distance (km):</label>
+            <input type="number" id="total_distance" name="total_distance" value="50" step="0.1" required />
+          </div>
+
+          <div class="form-group">
+            <label for="covered_distance">Distance Covered (km):</label>
+            <input type="number" id="covered_distance" name="covered_distance" step="0.1" required />
+          </div>
+
+          <div class="form-group">
+            <label for="elapsed_time">Elapsed Time (hours):</label>
+            <input type="number" id="elapsed_time" name="elapsed_time" step="0.1" required />
+          </div>
+
+          <div class="form-group">
+            <label for="target_time">Target Time to Complete (hours):</label>
+            <input type="number" id="target_time" name="target_time" value="4" step="0.1" required />
+          </div>
+
+          <button type="submit" class="btn">Calculate Progress</button>
+        </form>
+      </div>
+
+      <!-- Errors -->
+      <div id="errorsBox" class="errors" style="display:none;">
+        <h3>⚠️ Input Errors:</h3>
+        <ul id="errorsList"></ul>
+      </div>
+
+      <!-- Results -->
+      <div id="resultsBox" class="results" style="display:none;">
+        <h2>📈 Race Analysis</h2>
+
+        <div class="result-item">
+          <span class="result-label">Current Average Speed:</span>
+          <span class="result-value" id="currentSpeed">0.00 km/h</span>
+        </div>
+
+        <div class="result-item">
+          <span class="result-label">Required Speed to Finish:</span>
+          <span class="result-value" id="requiredSpeed">0.00 km/h</span>
+        </div>
+
+        <div class="result-item">
+          <span class="result-label">Remaining Distance:</span>
+          <span class="result-value" id="remainingDistance">0.00 km</span>
+        </div>
+
+        <div class="result-item">
+          <span class="result-label">Remaining Time:</span>
+          <span class="result-value" id="remainingTime">0 minutes</span>
+        </div>
+
+        <div id="statusBox" class="speed-warning"></div>
+      </div>
+
+      <!-- History (session only) -->
+      <div class="history-section">
+        <h2>📋 Demo History (this session only)</h2>
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Date/Time</th>
+              <th>Total Distance</th>
+              <th>Covered Distance</th>
+              <th>Elapsed Time</th>
+              <th>Target Time</th>
+              <th>Current Speed</th>
+              <th>Required Speed</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody"></tbody>
+        </table>
+
+        <button id="clearHistory" class="btn" style="margin-top:15px;">Clear History</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Fez_Dev. All rights reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
