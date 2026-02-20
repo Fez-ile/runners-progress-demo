@@ -1,10 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Runner's Progress Tracker (Demo)</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Runner's Progress Tracker</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #fff5f5 0%, #ffecec 100%);
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #e53935 0%, #c62828 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 2.5em;
+      font-weight: 300;
+    }
+
+    .content {
+      padding: 30px;
+    }
+
+    .form-section {
+      background: #f8f9fa;
+      padding: 25px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #e53935;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #43a047 0%, #2e7d32 100%);
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .errors {
+      background: #ffebee;
+      color: #c62828;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .results {
+      background: #e8f5e8;
+      padding: 25px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      display: none;
+    }
+
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      padding: 10px;
+      background: white;
+      border-radius: 5px;
+    }
+
+    .result-label {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .result-value {
+      font-weight: 500;
+      color: #d32f2f;
+    }
+
+    .history-section {
+      background: #f8f9fa;
+      padding: 25px;
+      border-radius: 10px;
+    }
+
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    .history-table th,
+    .history-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .history-table th {
+      background: #e53935;
+      color: white;
+      font-weight: 600;
+    }
+
+    .history-table tr:nth-child(even) {
+      background: #f2f2f2;
+    }
+
+    .history-table tr:hover {
+      background: #ffebee;
+    }
+
+    .speed-warning {
+      background: #fff3cd;
+      color: #856404;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 18px;
+    }
+  </style>
 </head>
 
 <body>
@@ -13,46 +177,45 @@
       <h1>🏃‍♂️ Runner's Progress Tracker</h1>
       <p>Track your marathon progress and calculate required pace</p>
       <p>The faster you run, the sooner you can stop running. Logic! 😎</p>
-      <p class="note">Read-only demo (no saving). Full PHP version available on GitHub.</p>
+      <p style="opacity:.9;font-size:.95rem;">Read-only demo (no saving). Full PHP version available on GitHub.</p>
     </div>
 
     <div class="content">
       <div class="form-section">
         <h2>📊 Enter Race Details</h2>
-
         <form id="raceForm">
           <div class="form-group">
             <label for="total_distance">Total Marathon Distance (km):</label>
-            <input type="number" id="total_distance" name="total_distance" value="50" step="0.1" required />
+            <input type="number" id="total_distance" name="total_distance" value="50" step="0.1" required>
           </div>
 
           <div class="form-group">
             <label for="covered_distance">Distance Covered (km):</label>
-            <input type="number" id="covered_distance" name="covered_distance" step="0.1" required />
+            <input type="number" id="covered_distance" name="covered_distance" step="0.1" required>
           </div>
 
           <div class="form-group">
             <label for="elapsed_time">Elapsed Time (hours):</label>
-            <input type="number" id="elapsed_time" name="elapsed_time" step="0.1" required />
+            <input type="number" id="elapsed_time" name="elapsed_time" step="0.1" required>
           </div>
 
           <div class="form-group">
             <label for="target_time">Target Time to Complete (hours):</label>
-            <input type="number" id="target_time" name="target_time" value="4" step="0.1" required />
+            <input type="number" id="target_time" name="target_time" value="4" step="0.1" required>
           </div>
 
           <button type="submit" class="btn">Calculate Progress</button>
         </form>
       </div>
 
-      <!-- Errors -->
-      <div id="errorsBox" class="errors" style="display:none;">
+      <!-- Errors (JS fills this) -->
+      <div class="errors" id="errorsBox">
         <h3>⚠️ Input Errors:</h3>
         <ul id="errorsList"></ul>
       </div>
 
-      <!-- Results -->
-      <div id="resultsBox" class="results" style="display:none;">
+      <!-- Results (JS fills this) -->
+      <div class="results" id="resultsBox">
         <h2>📈 Race Analysis</h2>
 
         <div class="result-item">
@@ -75,7 +238,7 @@
           <span class="result-value" id="remainingTime">0 minutes</span>
         </div>
 
-        <div id="statusBox" class="speed-warning"></div>
+        <div class="speed-warning" id="statusBox"></div>
       </div>
 
       <!-- History (session only) -->
@@ -96,13 +259,14 @@
           <tbody id="historyBody"></tbody>
         </table>
 
-        <button id="clearHistory" class="btn" style="margin-top:15px;">Clear History</button>
+        <button type="button" class="btn" id="clearHistory" style="margin-top:15px;">Clear History</button>
       </div>
+
     </div>
   </div>
 
   <footer>
-    <p>&copy; 2026 Fez_Dev. All rights reserved.</p>
+    <p>&copy; 2025 Fez_Dev. All rights reserved.</p>
   </footer>
 
   <script src="script.js"></script>
