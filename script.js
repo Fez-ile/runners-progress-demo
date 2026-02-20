@@ -23,32 +23,33 @@ function calculateCurrentSpeed(coveredDistance, elapsedTime) {
 function calculateRequiredSpeed(totalDistance, coveredDistance, elapsedTime, targetTime) {
   const remainingDistance = totalDistance - coveredDistance;
   const remainingTime = targetTime - elapsedTime;
+
   if (remainingTime <= 0) return 0;
   return remainingDistance / remainingTime; // km/h
 }
 
 function formatSpeed(speed) {
   if (speed === 0) return "0.00 km/h";
-  return `${speed.toFixed(2)} km/h`;
+  return speed.toFixed(2) + " km/h";
 }
 
 function formatTime(hours) {
   const wholeHours = Math.floor(hours);
   const minutes = Math.round((hours - wholeHours) * 60);
 
-  if (wholeHours === 0) return `${minutes} minutes`;
-  if (minutes === 0) return `${wholeHours} hours`;
-  return `${wholeHours} hours ${minutes} minutes`;
+  if (wholeHours === 0) return minutes + " minutes";
+  if (minutes === 0) return wholeHours + " hours";
+  return wholeHours + " hours " + minutes + " minutes";
 }
 
 function validateInput(totalDistance, coveredDistance, elapsedTime, targetTime) {
   const errors = [];
 
-  if (!(totalDistance > 0)) errors.push("Total distance must be greater than 0");
+  if (totalDistance <= 0) errors.push("Total distance must be greater than 0");
   if (coveredDistance < 0) errors.push("Covered distance cannot be negative");
   if (coveredDistance > totalDistance) errors.push("Covered distance cannot exceed total distance");
   if (elapsedTime < 0) errors.push("Elapsed time cannot be negative");
-  if (!(targetTime > 0)) errors.push("Target time must be greater than 0");
+  if (targetTime <= 0) errors.push("Target time must be greater than 0");
   if (elapsedTime >= targetTime) errors.push("Elapsed time cannot be greater than or equal to target time");
 
   return errors;
@@ -56,19 +57,26 @@ function validateInput(totalDistance, coveredDistance, elapsedTime, targetTime) 
 
 function showErrors(errors) {
   errorsList.innerHTML = "";
+  if (!errors.length) {
+    errorsBox.style.display = "none";
+    return;
+  }
+
   errors.forEach(err => {
     const li = document.createElement("li");
     li.textContent = err;
     errorsList.appendChild(li);
   });
-  errorsBox.style.display = errors.length ? "block" : "none";
+
+  errorsBox.style.display = "block";
 }
 
 function renderHistory() {
   historyBody.innerHTML = "";
-  [...history].reverse().forEach(row => {
+
+  history.slice().reverse().forEach(row => {
     const tr = document.createElement("tr");
-    row.forEach((cell) => {
+    row.forEach(cell => {
       const td = document.createElement("td");
       td.textContent = cell;
       tr.appendChild(td);
@@ -84,6 +92,10 @@ clearHistoryBtn.addEventListener("click", () => {
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
+
+  // Reset status styles (in case it was green before)
+  statusBox.style.background = "";
+  statusBox.style.color = "";
 
   const totalDistance = Number(document.getElementById("total_distance").value);
   const coveredDistance = Number(document.getElementById("covered_distance").value);
@@ -107,33 +119,35 @@ form.addEventListener("submit", (e) => {
   // Fill results
   currentSpeedEl.textContent = formatSpeed(currentSpeed);
   requiredSpeedEl.textContent = formatSpeed(requiredSpeed);
-  remainingDistanceEl.textContent = `${remainingDistance.toFixed(2)} km`;
+  remainingDistanceEl.textContent = remainingDistance.toFixed(2) + " km";
   remainingTimeEl.textContent = formatTime(remainingTime);
 
-  // Status message (same logic as your PHP)
+  // Status message (same logic as PHP)
   if (requiredSpeed > currentSpeed && currentSpeed > 0) {
-    statusBox.className = "speed-warning";
-    statusBox.textContent = `⚠️ You need to increase your pace by ${formatSpeed(requiredSpeed - currentSpeed)} to meet your target time!`;
+    statusBox.textContent =
+      "⚠️ You need to increase your pace by " +
+      formatSpeed(requiredSpeed - currentSpeed) +
+      " to meet your target time!";
   } else if (requiredSpeed <= 0) {
-    statusBox.className = "speed-warning";
     statusBox.textContent = "⚠️ Your target time has already been exceeded!";
   } else {
-    statusBox.className = "speed-warning";
+    statusBox.textContent = "✅ You're on track to meet your target time!";
     statusBox.style.background = "#d4edda";
     statusBox.style.color = "#155724";
-    statusBox.textContent = "✅ You're on track to meet your target time!";
   }
 
   resultsBox.style.display = "block";
 
-  // Add to demo history (session only)
-  const now = new Date().toISOString().replace("T", " ").slice(0, 19);
+  // Add to history (session only)
+  const now = new Date();
+  const timestamp = now.toISOString().replace("T", " ").slice(0, 19);
+
   history.push([
-    now,
-    `${totalDistance} km`,
-    `${coveredDistance} km`,
-    `${elapsedTime} h`,
-    `${targetTime} h`,
+    timestamp,
+    totalDistance + " km",
+    coveredDistance + " km",
+    elapsedTime + " h",
+    targetTime + " h",
     formatSpeed(currentSpeed),
     formatSpeed(requiredSpeed),
   ]);
